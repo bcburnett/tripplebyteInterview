@@ -11,19 +11,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 */
 
 import {
-  BUTTON_CLICKED
+  BUTTON_CLICKED,
+  OBSERV_EVENT
 } from '../actions/app.js';
 
 const INITIAL_STATE = {
-  click: false
+  click: false,
+  count:0,
 };
 
 const app = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+
     case BUTTON_CLICKED:
       return {
         ...state,
         click: !state.click
+      };
+
+
+    case OBSERV_EVENT:
+      return {
+        ...state,
+        count: action.count,
       };
 
     default:

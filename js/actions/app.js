@@ -1,3 +1,4 @@
+/* jshint esversion:9*/
 /**
 @license
 Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
@@ -8,9 +9,17 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 
-export const BUTTON_CLICKED = 'BUTTON_CLICKED'
+export const BUTTON_CLICKED = 'BUTTON_CLICKED';
 export const buttonClicked = () => {
   return {
     type: BUTTON_CLICKED,
+  };
+};
+
+export const OBSERV_EVENT = 'OBSERV_EVENT';
+export const observEvent = (count) => {
+  return {
+    type: OBSERV_EVENT,
+    count
   };
 };

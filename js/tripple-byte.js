@@ -3,7 +3,8 @@
 import {LitElement, html, css} from 'lit-element'
 import { connect } from 'pwa-helpers/connect-mixin.js';
 import { store } from './store.js';
-import { buttonClicked} from './actions/app'
+import { buttonClicked, observEvent} from './actions/app';
+import {Observable} from "rxjs";
 
 export class TrippleByte extends connect(store)( LitElement) {
 
@@ -13,6 +14,8 @@ export class TrippleByte extends connect(store)( LitElement) {
   static get properties(){
     return {
       clicked: Boolean,
+      observable: Function,
+      count: Number,
     };
   }
 
@@ -33,6 +36,20 @@ static get styles() {
   constructor(){
     super();
     this.clicked = false;
+    this.observable = Observable.create((observer)=>{
+      var count = 0;
+      observer.next(count);
+      setInterval(() => {
+        count+=1;
+        count = count>10? 0 : count;
+        observer.next(count);
+      }, 1000);
+      
+    });
+    this.observable.subscribe((count)=>
+    {
+      store.dispatch(observEvent(count));
+    });
   }
 
   /**
@@ -42,44 +59,27 @@ static get styles() {
     console.log('first updated', changedProperties);
   }
 
-  /**
-   *  Invoked when a component is added to the document’s DOM.
-   */
-  connectedCallback() {
-    super.connectedCallback();
-  
-    console.log('connected');
-  }
 
-  /**
-   *  Invoked when a component is removed from the document’s DOM.
-   */
-  disconnectedCallback() {
-    super.disconnectedCallback();
-  
-    console.log('disconnected');
-  }
-
-  attributeChangedCallback(name, oldValue, newValue){
-    super.attributeChangedCallback();
-    console.log('attribute changed', e);
-  }
 
   render(){
     return html`
+    <style>
+    h2 {
+      background-color:rgb(${this.count*25},${this.count*25},${this.count*25})
+    }
+    </style>
   <h1 class="${this.clicked? "clicked" : ""}">tripple-byte</h1>
   <button @click="${()=>store.dispatch(buttonClicked())}">click me</button>
+  <h2> The current count is ${this.count} </h2>
     `;
   }
 
 stateChanged(state) {
-console.log(state);
 this.clicked = state.app.click;
+this.count = state.app.count;
 }
 
-updated(changedProperties) {
-  console.log(changedProperties);
-}
+
 
 }
 
